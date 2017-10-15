@@ -1,8 +1,10 @@
 class NotesController < ApplicationController
 	before_action :find_note, only: [:show, :edit, :update, :destroy]
+	before_action :authenticate_user!
 
 	def index
-		@note = Note.all.order("Created_at DESC")
+	@notepermissions = NotePermission.where(user_id: current_user.id)
+	# @notes = Note.where(user_id: current_user.id)
 	end
 
 
@@ -15,7 +17,6 @@ class NotesController < ApplicationController
 
 	def create
 		@note=  current_user.notes.build(note_params)
-
 		if @note.save
 			redirect_to @note, notice: "Successfully notes created."
 		else
